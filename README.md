@@ -30,8 +30,8 @@
   The input, a vector of size 3 and the strategy, a vector of size 3, will determine the decision. The decision is either 0, for ending the turn, or 1, for rolling the dice. 
   The decision is found as the dot product of the input and the strategy. The dot product is then mapped to a binary using step function, 0 if the value is negative, and 1 otherwise.
   
-  ## genetic algorithm
-    using simple genetic algoritm to search for an optimal strategy.
-    
-  ## conclusion
-    the result is not very satisfying, the optimal strategy yeilded from the genetic algorithm performs, on average, the same as the basic strategy.
+## genetic algorithm
+  using simple genetic algoritm to search for an optimal strategy.
+
+## conclusion
+  the result is not very satisfying, the optimal strategy yeilded from the genetic algorithm performs, on average, the same as the basic strategy.
