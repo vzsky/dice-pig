@@ -3,32 +3,39 @@ from roller import Roller
 import numpy as np
 import random
 
+population_size = 100
+total_generations = 20
+total_parents = 30
+chromosome_size = 5
+mutation_prob = 0.05
+mutation_strength = 0.1
+target = 100
+gene_max = 1.0
+fitness_trial = 10000
+
 class Organism :
   def __init__ (self, target, weight) :
     self.roller = Roller(weight)
     self.controller = Controller(target, self.roller)
+    self.cache_fitness = 0
 
   @property
   def fitness (self) : 
-    return self.controller.get_average_score(50)
+    if self.cache_fitness != 0 : 
+      return self.cache_fitness
+    self.cache_fitness = self.controller.get_average_score(fitness_trial)
+    return self.cache_fitness
 
 
 if __name__ == "__main__" : 
 
-  population_size = 1000
-  total_generations = 20
-  total_parents = 35
-  chromosome_size = 3
-  mutation_prob = 0.1
-
-  population_gene = np.random.uniform(low=-4.0, high=4.0, size=(population_size, chromosome_size))
-  population = [Organism(100, member) for member in population_gene]
+  population_gene = np.random.uniform(low=-gene_max, high=gene_max, size=(population_size, chromosome_size))
+  population = [Organism(target, member) for member in population_gene]
+  population = sorted(population, key=lambda o:o.fitness)
 
   for turn in range(total_generations) : 
 
     print("generation", turn)
-
-    population = sorted(population, key=lambda o:o.fitness)
 
     parents = population[0:total_parents]
     offsprings = []
@@ -41,13 +48,14 @@ if __name__ == "__main__" :
 
       if random.random() < mutation_prob : 
         index = random.randrange(0, chromosome_size)
-        child_weight[index] = 0.5*child_weight[index] + 0.5*np.random.uniform(low=-4.0, high=4.0)
+        child_weight[index] = (1-mutation_strength)*child_weight[index] + mutation_strength*np.random.uniform(low=-gene_max, high=gene_max)
 
-      child = Organism(100, child_weight)  
+      child = Organism(target, child_weight)  
       offsprings.append(child)
 
     population = offsprings + parents
-
     population = sorted(population, key=lambda o:o.fitness)
+
     print(population[0].controller.roller.weight)
-    print(population[0].controller.get_average_score(100))
+    print(population[0].fitness)
+    print("real measure", population[0].controller.get_average_score(10000))

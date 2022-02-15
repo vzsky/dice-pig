@@ -1,22 +1,21 @@
 from game import Game
 class Controller :
-  """2 dimension -- control interaction of during gameplay"""
+  """control interaction of during gameplay"""
   def __init__ (self, target, roller) :
     self.roller = roller
     self.game = Game(target)
 
   def _get_game_stat (self) :
     stat = []
-    stat.append(float(self.game.accumulated_value)/6.0)
+    stat.append(float(self.game.accumulated_value))
     stat.append(float(self.game.number_of_continuous_roll))
+    stat.append(float(self.game.target-self.game.kept_value))
+    stat.append(float(self.game.number_of_turn))
     return stat
 
-  def _get_roller_action (self) : 
-    stat = self._get_game_stat()
-    return self.roller.action(stat)
-  
   def play_game (self) : 
-    action = self._get_roller_action()
+    stat = self._get_game_stat()
+    action = self.roller.action(stat)
     score = self.game.action(action)
     return score
 
